@@ -1,0 +1,71 @@
+<html>
+  <body>
+    <svg id = "stage" style='position:fixed; top:0; left:0; height:100%; width:100%; stroke-width: 0px; background-color: teal;'></svg>
+
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script src="js/game.js" charset="utf-8"></script>
+    <script>
+      /*
+        Script containing the visual elements
+      */
+      var topLeft = {x: 400, y: 50};    //all tile positions are relative to topLeft object coordinates
+      var tilePositions = [
+        topLeft, {x: topLeft.x+300, y: topLeft.y}, {x: topLeft.x+600, y: topLeft.y},    //row 1
+        {x: topLeft.x+100, y: topLeft.y+100}, {x: topLeft.x+300, y: topLeft.y+100}, {x: topLeft.x+500, y: topLeft.y+100},   //row 2
+        {x: topLeft.x+200, y: topLeft.y+200}, {x: topLeft.x+300, y: topLeft.y+200}, {x: topLeft.x+400, y: topLeft.y+200},   //row 3
+        {x: topLeft.x+200, y: topLeft.y+400}, {x: topLeft.x+300, y: topLeft.y+400}, {x: topLeft.x+400, y: topLeft.y+400},   //row 5
+        {x: topLeft.x+100, y: topLeft.y+500}, {x: topLeft.x+300, y: topLeft.y+500}, {x: topLeft.x+500, y: topLeft.y+500},   //row 6
+        {x: topLeft.x, y: topLeft.y+600}, {x: topLeft.x+300, y: topLeft.y+600}, {x: topLeft.x+600, y: topLeft.y+600},   //row 7
+
+        {x: topLeft.x+200, y: topLeft.y+300}, {x: topLeft.x+100, y: topLeft.y+300}, {x: topLeft.x, y: topLeft.y+300},   //row 4 - left side
+        {x: topLeft.x+400, y: topLeft.y+300}, {x: topLeft.x+500, y: topLeft.y+300}, {x: topLeft.x+600, y: topLeft.y+300},   //row 4 - right side
+      ];
+
+      var Stage = d3.select ('#stage'),
+        height = window.innerHeight,
+        width = window.innerWidth,
+        boardWIdth = (70/100)*width,
+        boardHeight = (70/100)*height,
+        margin = {top: 30, bottom: 30, left: 30, right: 30};
+
+      var tilesGroup = Stage.append ('g'),
+        playersGroup = Stage.append ('g');
+
+      tilesGroup.selectAll ('circle')
+        .data (tilePositions)
+        .enter ()
+        .append ('circle')
+        .attr ({
+          cx: function (pos, i) { return (pos.x); },
+          cy: function (pos) { return (pos.y); },
+          stroke: 0,
+          fill: 'indigo',
+          r: 0
+        })
+        .transition ()
+        .duration (400)
+        .attr ({ r: 15 });
+
+      playersGroup.selectAll ('circle')
+        .data (players)
+        .enter ()
+        .append ('circle')
+        .attr ({
+          stroke: 0,
+          fill: function (player) {
+            return player.team ? 'white' : 'black'
+          },
+          r: 0,
+          cx: function (player) {
+            return player.team ? topLeft.x - 100 : topLeft.x + 700
+          },
+          cy: function (player) { return 400; }
+        })
+        .transition ()
+        .duration (400)
+        .attr ({ r: 20 });
+
+      function initScreen () {};
+    </script>
+  </body>
+</html>
