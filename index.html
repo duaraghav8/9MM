@@ -31,44 +31,54 @@
       var tilesGroup = Stage.append ('g'),
         playersGroup = Stage.append ('g');
 
-      tilesGroup.selectAll ('circle')
-        .data (tilePositions)
-        .enter ()
-        .append ('circle')
-        .attr ({
-          cx: function (pos, i) { return (pos.x); },
-          cy: function (pos) { return (pos.y); },
-          stroke: 0,
-          fill: 'indigo',
-          r: 0
-        })
-        .transition ()
-        .duration (400)
-        .attr ({ r: 15 });
+      initializeBoard ();
 
-      console.log (players);
-      playersGroup.selectAll ('circle')
-        .data (players)
-        .enter ()
-        .append ('circle')
-        .attr ({
-          stroke: 0,
-          fill: function (player) {
-            return player.team ? 'white' : 'black'
-          },
-          r: 0,
-          cx: function (player) {
-            return player.team ? topLeft.x - 200 : topLeft.x + 800
-          },
-          cy: function (player) {
-            return topLeft.y + (player.id*100);
-          }
-        })
-        .transition ()
-        .duration (400)
-        .attr ({ r: 20 });
+      function initializeBoard () {
+        tilesGroup.selectAll ('circle')
+          .data (tilePositions)
+          .enter ()
+          .append ('circle')
+          .attr ({
+            cx: function (pos, i) {
+              game.tiles [i].position.x = pos.x;
+              return (pos.x);
+            },
+            cy: function (pos, i) {
+              game.tiles [i].position.y = pos.y;
+              return (pos.y);
+            },
+            stroke: 0,
+            fill: 'indigo',
+            r: 0
+          })
+          .transition ()
+          .duration (400)
+          .attr ({ r: 15 });
 
-      function initScreen () {};
+        playersGroup.selectAll ('circle')
+          .data (game.players)
+          .enter ()
+          .append ('circle')
+          .attr ({
+            stroke: 0,
+            fill: function (player) {
+              return player.team ? 'white' : 'black'
+            },
+            r: 0,
+            cx: function (player) {
+              return (
+                player.team ?
+                  (player.position.x = topLeft.x-200) : (player.position.x = topLeft.x+800)
+              );
+            },
+            cy: function (player) {
+              return player.position.y = topLeft.y + (player.id*100);
+            }
+          })
+          .transition ()
+          .duration (400)
+          .attr ({ r: 20 });
+      };
     </script>
   </body>
 </html>
