@@ -25,11 +25,11 @@ function init () {
   }
 
   var currentTeam = 1;
-  for (var i = 1; i <= 18; i++) {
-    if (i === 10) { currentTeam = Number (!currentTeam); }
+  for (var i = 0; i < 18; i++) {
+    if (i === 9) { currentTeam = Number (!currentTeam); }
 
     players.push ({
-      id: i-1,
+      id: i % 9,
       position: {},    //based on whether its Team 1 / 0 and other factors
       status: {
         alive: true,
@@ -40,3 +40,5 @@ function init () {
     });
   }
 };
+
+init ();

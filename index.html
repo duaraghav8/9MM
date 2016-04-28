@@ -46,6 +46,7 @@
         .duration (400)
         .attr ({ r: 15 });
 
+      console.log (players);
       playersGroup.selectAll ('circle')
         .data (players)
         .enter ()
@@ -57,9 +58,11 @@
           },
           r: 0,
           cx: function (player) {
-            return player.team ? topLeft.x - 100 : topLeft.x + 700
+            return player.team ? topLeft.x - 200 : topLeft.x + 800
           },
-          cy: function (player) { return 400; }
+          cy: function (player) {
+            return topLeft.y + (player.id*100);
+          }
         })
         .transition ()
         .duration (400)
