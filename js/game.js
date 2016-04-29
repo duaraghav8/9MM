@@ -1,15 +1,8 @@
-var Tile = function (attr) {
-  this.attributes = attr;   //attr = {id: .., position: [], status: {occupied: .., player: ..}, }
-};
-
-var Player = function (attr) {
-  this.attributes = attr;   //attr = {id: .., position: [], status: {alive: .., occupies: .., tile: ..}, }
-};
-
 var Game = function () {
   this.tiles = [];
   this.players = [];
   this.phase1Counter = 0;
+  this.currentPhase = undefined;
   var gameScope = this;
 
   (function init () {
@@ -50,8 +43,9 @@ Game.prototype = {
 
   selectPlayer: function (player) {
     console.log ('selecting player', this.players [player.id]);
+    //first determine whether this selection is for moving or for deleting (in case a 3-liner has been formed)
     /*
-      if not phase 1:
+      if not phase 1 AND player clicked is team 1 (white):
         select this player, return true
       else don't select player & return false
 
@@ -59,7 +53,7 @@ Game.prototype = {
     */
     return new Promise (function (resolve, reject) {
       if (true) {
-        resolve ({succeeded: true, previouslySelectPlayer: undefined});
+        resolve ({previouslySelectPlayer: undefined});
       }
       else {
         reject ();
@@ -68,6 +62,7 @@ Game.prototype = {
   },
   moveSelectedPlayer: function (tile) {
     console.log ('moving to--->', tile, this.tiles [tile.id]);
+    var mspFunctionScope = this;
 
     return new Promise (function (resolve, reject) {
       /*
@@ -76,6 +71,15 @@ Game.prototype = {
       */
       if (true) {
         //change player properties before sending
+        with (currentlySelectedPlayer.playerObject.status) {    //change tile information
+          occupies = true;
+          tile = thisTile.id;
+        };
+        with (mspFunctionScope.tiles [tile.id].status) {      //change player information
+          occupied = true,
+          player = currentlySelectedPlayer.playerObject.id
+        };
+
         resolve ({succeeded: true, currentlySelectedPlayer: undefined});   //return currently selected player
       }
       else {

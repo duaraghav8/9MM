@@ -38,6 +38,7 @@
         gamePlayers = game.getPlayers ();
 
       initializeBoard ();
+      //we have to provide the game object with function so it can call it when black's move has been decided
 
       function initializeBoard () {
         tiles = tilesGroup.selectAll ('circle')
@@ -67,8 +68,6 @@
         tiles
           .on ('mouseover', function () {
             d3.select (this)
-              .transition ()
-              .duration (300)
               .attr ({
                 'fill-opacity': 1,
                 'stroke-width': 2,
@@ -85,12 +84,24 @@
               });
           })
           .on ('click', function () {
+            var thisTile = this;
             game
-              .moveSelectedPlayer (this)
-              .then (function (status) {
-                //player transition using status.currentlySelectedPlayer
+              .moveSelectedPlayer (thisTile)
+              .then (function (currentlySelectedPlayer) {
+                d3.select (currentlySelectedPlayer.visualReprentative)
+                  .transition ()
+                  .duration (300)
+                  .attr ({
+                    cx: thisTile.cx,
+                    cy: thisTile.cy,
+                    fill: function (player) { return player.team ? 'white' : 'black' }
+                  });
+
+                currentlySelectedPlayer.playerObject.position = { x: thisTile.cx, y: thisTile.cy };
               })
-              .catch (function () {});
+              .catch (function () {
+                console.log ('Move attempt failed');
+              });
           });
 
         players = playersGroup.selectAll ('circle')
@@ -138,17 +149,15 @@
             var thisPlayer = this;
             game
               .selectPlayer (thisPlayer)
-              .then (function (status) {
-                if (status.succeeded) {
-                  d3.select (thisPlayer)
-                    .attr ({ fill: 'rgb(128, 0, 0)' });
-                }
+              .then (function (previouslySelectPlayer) {
+                d3.select (thisPlayer)
+                  .attr ({ fill: 'rgb(128, 0, 0)' });
 
-                if (status.previouslySelectPlayer) {
-                  d3.select (status.previouslySelectPlayer)
+                if (previouslySelectPlayer) {
+                  d3.select (previouslySelectPlayer.visualReprentative)
                     .attr ({
                       fill: function () {
-                        return status.previouslySelectPlayer.team ? 'white' : 'black'
+                        return previouslySelectPlayer.team ? 'white' : 'black'
                       }
                     });
                 }
