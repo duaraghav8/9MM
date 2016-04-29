@@ -1,84 +1,92 @@
-<html>
-  <body>
-    <svg id = "stage" style='position:fixed; top:0; left:0; height:100%; width:100%; stroke-width: 0px; background-color: teal;'></svg>
+var Tile = function (attr) {
+  this.attributes = attr;   //attr = {id: .., position: [], status: {occupied: .., player: ..}, }
+};
 
-    <script src="js/d3.v3.min.js" charset="utf-8"></script>
-    <script src="js/game.js" charset="utf-8"></script>
-    <script>
-      /*
-        Script containing the visual elements
-      */
-      var topLeft = {x: 400, y: 50};    //all tile positions are relative to topLeft object coordinates
-      var tilePositions = [
-        topLeft, {x: topLeft.x+300, y: topLeft.y}, {x: topLeft.x+600, y: topLeft.y},    //row 1
-        {x: topLeft.x+100, y: topLeft.y+100}, {x: topLeft.x+300, y: topLeft.y+100}, {x: topLeft.x+500, y: topLeft.y+100},   //row 2
-        {x: topLeft.x+200, y: topLeft.y+200}, {x: topLeft.x+300, y: topLeft.y+200}, {x: topLeft.x+400, y: topLeft.y+200},   //row 3
-        {x: topLeft.x+200, y: topLeft.y+400}, {x: topLeft.x+300, y: topLeft.y+400}, {x: topLeft.x+400, y: topLeft.y+400},   //row 5
-        {x: topLeft.x+100, y: topLeft.y+500}, {x: topLeft.x+300, y: topLeft.y+500}, {x: topLeft.x+500, y: topLeft.y+500},   //row 6
-        {x: topLeft.x, y: topLeft.y+600}, {x: topLeft.x+300, y: topLeft.y+600}, {x: topLeft.x+600, y: topLeft.y+600},   //row 7
+var Player = function (attr) {
+  this.attributes = attr;   //attr = {id: .., position: [], status: {alive: .., occupies: .., tile: ..}, }
+};
 
-        {x: topLeft.x+200, y: topLeft.y+300}, {x: topLeft.x+100, y: topLeft.y+300}, {x: topLeft.x, y: topLeft.y+300},   //row 4 - left side
-        {x: topLeft.x+400, y: topLeft.y+300}, {x: topLeft.x+500, y: topLeft.y+300}, {x: topLeft.x+600, y: topLeft.y+300},   //row 4 - right side
-      ];
+var Game = function () {
+  this.tiles = [];
+  this.players = [];
+  this.phase1Counter = 0;
+  var gameScope = this;
 
-      var Stage = d3.select ('#stage'),
-        height = window.innerHeight,
-        width = window.innerWidth,
-        boardWIdth = (70/100)*width,
-        boardHeight = (70/100)*height,
-        margin = {top: 30, bottom: 30, left: 30, right: 30};
-
-      var tilesGroup = Stage.append ('g'),
-        playersGroup = Stage.append ('g');
-
-      initializeBoard ();
-
-      function initializeBoard () {
-        tilesGroup.selectAll ('circle')
-          .data (tilePositions)
-          .enter ()
-          .append ('circle')
-          .attr ({
-            cx: function (pos, i) {
-              game.tiles [i].position.x = pos.x;
-              return (pos.x);
-            },
-            cy: function (pos, i) {
-              game.tiles [i].position.y = pos.y;
-              return (pos.y);
-            },
-            stroke: 0,
-            fill: 'indigo',
-            r: 0
-          })
-          .transition ()
-          .duration (400)
-          .attr ({ r: 15 });
-
-        playersGroup.selectAll ('circle')
-          .data (game.players)
-          .enter ()
-          .append ('circle')
-          .attr ({
-            stroke: 0,
-            fill: function (player) {
-              return player.team ? 'white' : 'black'
-            },
-            r: 0,
-            cx: function (player) {
-              return (
-                player.team ?
-                  (player.position.x = topLeft.x-200) : (player.position.x = topLeft.x+800)
-              );
-            },
-            cy: function (player) {
-              return player.position.y = topLeft.y + (player.id*100);
-            }
-          })
-          .transition ()
-          .duration (400)
-          .attr ({ r: 20 });
+  (function init () {
+    for (var id = 0; id < 24; id++) {
+      var tileAttr = {
+        id: id,
+        position: {x: undefined, y: undefined},
+        status: {
+          occupied: false,
+          player: undefined
+        },
+        neighbours: {left: undefined, right: undefined, upper: undefined, lower: undefined}
       };
-    </script>
-  </body>
-</html>
+
+      gameScope.tiles.push (tileAttr);
+    }
+
+    var currentTeam = 1;
+    for (var i = 0; i < 18; i++) {
+      gameScope.players.push ({
+        id: i,
+        position: {x: undefined, y: undefined},    //based on whether its Team 1(W) / 0(B) and other factors
+        status: {
+          alive: true,
+          occupies: false,
+          tile: null
+        },
+        team: currentTeam
+      });
+      currentTeam = Number (!currentTeam);
+    }
+  }) ();
+};
+
+Game.prototype = {
+  getTiles: function () { return (this.tiles); },
+  getPlayers: function () { return (this.players); },
+
+  selectPlayer: function (player) {
+    console.log ('selecting player', this.players [player.id]);
+    /*
+      if not phase 1:
+        select this player, return true
+      else don't select player & return false
+
+      if there was another player previously selected, return its id so we can de-select it visually (change color)
+    */
+    return new Promise (function (resolve, reject) {
+      if (true) {
+        resolve ({succeeded: true, previouslySelectPlayer: undefined});
+      }
+      else {
+        reject ();
+      }
+    });
+  },
+  moveSelectedPlayer: function (tile) {
+    console.log ('moving to--->', tile, this.tiles [tile.id]);
+
+    return new Promise (function (resolve, reject) {
+      /*
+        if phase 1: currently selected player is automatic, else manual
+        if phase 2: check if the tile selected is valid for the selected player to move, i.e., a neighbouring tile
+      */
+      if (true) {
+        //change player properties before sending
+        resolve ({succeeded: true, currentlySelectedPlayer: undefined});   //return currently selected player
+      }
+      else {
+        reject ();
+      }
+    });
+  },
+
+  phase1: function () {
+    this.phase1Counter > 17 ? this.phase2 () : null;
+  },
+  phase2: function () {},
+  phase3: function () {}
+};
